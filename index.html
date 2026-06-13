@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Smartphones • Thiago Fidelis</title>
+<meta name="description" content="Catálogo de smartphones Xiaomi, Redmi, Poco e Realme. Entrega rápida, garantia e parcelamento.">
+<style>
+  :root{
+    --preto:#0e0e10;
+    --preto-2:#1b1b1f;
+    --branco:#ffffff;
+    --cinza:#f4f5f7;
+    --cinza-2:#e6e8ec;
+    --texto:#222428;
+    --texto-suave:#6b7280;
+    --whats:#25D366;
+    --whats-dark:#1ebe5a;
+    --realme:#FFC400;
+    --xiaomi:#FF6700;
+    --vermelho:#e53935;
+    --sombra:0 8px 24px rgba(16,18,22,.10);
+    --sombra-hover:0 16px 40px rgba(16,18,22,.20);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cinza);
+    color:var(--texto);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- HEADER / HERO ---------- */
+  .hero{
+    background:radial-gradient(120% 120% at 0% 0%, #25262b 0%, var(--preto) 55%, #000 100%);
+    color:var(--branco);
+    padding:54px 20px 46px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      radial-gradient(40% 60% at 85% 15%, rgba(255,103,0,.18), transparent 60%),
+      radial-gradient(40% 60% at 10% 90%, rgba(37,211,102,.16), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .logo-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.14);
+    padding:8px 16px;border-radius:999px;
+    font-size:.8rem;letter-spacing:.5px;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .hero .logo-badge .dot{width:9px;height:9px;border-radius:50%;background:var(--whats);box-shadow:0 0 0 4px rgba(37,211,102,.25)}
+  .hero h1{
+    font-size:clamp(2rem,6vw,3.4rem);
+    font-weight:800;letter-spacing:-1px;
+    line-height:1.05;position:relative;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(90deg,var(--xiaomi),var(--realme));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.sub{
+    margin-top:14px;font-size:clamp(1rem,2.6vw,1.25rem);
+    color:#cfd2d8;font-weight:500;position:relative;
+  }
+  .hero .perks{
+    margin-top:22px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;position:relative;
+  }
+  .hero .perks span{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+    padding:7px 14px;border-radius:999px;font-size:.85rem;
+  }
+
+  /* ---------- CONTROLES ---------- */
+  .controls{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--cinza-2);
+    padding:14px 16px;
+  }
+  .controls-inner{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  .search-wrap{position:relative;width:100%}
+  .search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:var(--texto-suave)}
+  #search{
+    width:100%;padding:13px 16px 13px 42px;
+    border:1.5px solid var(--cinza-2);border-radius:12px;
+    font-size:1rem;background:var(--branco);transition:.2s;
+  }
+  #search:focus{outline:none;border-color:var(--whats);box-shadow:0 0 0 3px rgba(37,211,102,.18)}
+  .filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .filter-btn{
+    border:1.5px solid var(--cinza-2);background:var(--branco);
+    color:var(--texto);padding:9px 15px;border-radius:999px;
+    font-size:.88rem;font-weight:600;cursor:pointer;transition:.18s;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .filter-btn:hover{border-color:var(--preto)}
+  .filter-btn.active{background:var(--preto);color:var(--branco);border-color:var(--preto)}
+  .filter-btn[data-filter="5g"].active{background:var(--xiaomi);border-color:var(--xiaomi)}
+  .filter-btn[data-filter="nfc"].active{background:var(--vermelho);border-color:var(--vermelho)}
+
+  /* ---------- LAYOUT ---------- */
+  main{max-width:1200px;margin:0 auto;padding:30px 16px 10px}
+  .brand-section{margin-bottom:42px;scroll-margin-top:140px}
+  .brand-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;
+  }
+  .brand-head h2{font-size:1.5rem;font-weight:800;letter-spacing:-.5px}
+  .brand-bar{height:30px;width:6px;border-radius:6px}
+  .brand-xiaomi .brand-bar{background:var(--xiaomi)}
+  .brand-realme .brand-bar{background:var(--realme)}
+  .brand-head .count{
+    margin-left:auto;background:var(--cinza-2);color:var(--texto-suave);
+    padding:4px 12px;border-radius:999px;font-size:.8rem;font-weight:600;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:20px;
+  }
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:var(--branco);border-radius:var(--radius);
+    box-shadow:var(--sombra);overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .25s ease, box-shadow .25s ease;
+    border:1px solid var(--cinza-2);
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:var(--sombra-hover)}
+  .card-img{
+    position:relative;aspect-ratio:4/3;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .card-img .ph{width:100%;height:100%;display:block}
+  .ribbon{
+    position:absolute;top:12px;left:12px;
+    background:var(--vermelho);color:#fff;font-size:.7rem;font-weight:700;
+    padding:4px 10px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase;
+  }
+  .brand-realme .ribbon{background:var(--realme);color:#2a2300}
+  .card-body{padding:16px 16px 18px;display:flex;flex-direction:column;flex:1}
+  .card-body h3{font-size:1.02rem;font-weight:700;line-height:1.25;margin-bottom:8px;min-height:2.5em}
+  .specs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .spec{
+    background:var(--cinza);border:1px solid var(--cinza-2);
+    font-size:.74rem;font-weight:600;color:#374151;
+    padding:3px 9px;border-radius:7px;display:inline-flex;align-items:center;gap:4px;
+  }
+  .spec.store{color:#0b6b3a;background:#e8f7ee;border-color:#cdeed9}
+  .spec.ram{color:#1d4ed8;background:#e8eefc;border-color:#d2def8}
+  .feats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .feat{
+    font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.3px;
+  }
+  .feat.f5g{background:var(--xiaomi);color:#fff}
+  .feat.fnfc{background:#111;color:#fff}
+  .feat.fwater{background:#0288d1;color:#fff}
+  .price-row{margin-top:auto;display:flex;align-items:baseline;gap:6px;margin-bottom:12px}
+  .price{font-size:1.5rem;font-weight:800;color:var(--preto)}
+  .price .cents{font-size:.95rem;font-weight:700;color:var(--texto-suave)}
+  .price-row .from{font-size:.72rem;color:var(--texto-suave);font-weight:600}
+  .buy{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    background:var(--whats);color:#fff;text-decoration:none;
+    padding:12px;border-radius:12px;font-weight:700;font-size:.95rem;
+    transition:.18s;box-shadow:0 4px 12px rgba(37,211,102,.35);
+  }
+  .buy:hover{background:var(--whats-dark);transform:translateY(-2px)}
+  .buy svg{width:19px;height:19px;fill:#fff}
+
+  .no-results{
+    text-align:center;padding:50px 20px;color:var(--texto-suave);
+    font-size:1.05rem;display:none;
+  }
+  .no-results.show{display:block}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--preto);color:#cfd2d8;
+    margin-top:30px;padding:40px 20px;text-align:center;
+  }
+  footer .fname{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:-.4px}
+  footer .fwhats{
+    margin-top:14px;display:inline-flex;align-items:center;gap:9px;
+    background:var(--whats);color:#fff;text-decoration:none;
+    padding:11px 20px;border-radius:999px;font-weight:700;
+    box-shadow:0 6px 18px rgba(37,211,102,.4);transition:.18s;
+  }
+  footer .fwhats:hover{background:var(--whats-dark);transform:translateY(-2px)}
+  footer .fwhats svg{width:20px;height:20px;fill:#fff}
+  footer .pays{margin-top:18px;font-size:.82rem;color:#8b8f98}
+  footer .copy{margin-top:18px;font-size:.78rem;color:#6b7078}
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed;right:18px;bottom:18px;z-index:60;
+    width:58px;height:58px;border-radius:50%;
+    background:var(--whats);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 22px rgba(37,211,102,.5);text-decoration:none;
+    animation:pulse 2.4s infinite;
+  }
+  .fab svg{width:30px;height:30px;fill:#fff}
+  @keyframes pulse{0%{box-shadow:0 8px 22px rgba(37,211,102,.5),0 0 0 0 rgba(37,211,102,.45)}70%{box-shadow:0 8px 22px rgba(37,211,102,.5),0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 8px 22px rgba(37,211,102,.5),0 0 0 0 rgba(37,211,102,0)}}
+
+  @media(max-width:520px){
+    .grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+    .card-body{padding:12px}
+    .card-body h3{font-size:.92rem;min-height:2.4em}
+    .price{font-size:1.25rem}
+    .buy{font-size:.85rem;padding:11px 8px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="logo-badge"><span class="dot"></span> Loja oficial • Thiago Fidelis</span>
+  <h1>Catálogo de <span class="accent">Smartphones</span></h1>
+  <p class="sub">Entrega rápida • Garantia • Parcelamento</p>
+  <div class="perks">
+    <span>📦 Entrega rápida</span>
+    <span>🛡️ Garantia</span>
+    <span>💳 Parcelamento</span>
+    <span>✅ Aparelhos lacrados</span>
+  </div>
+</header>
+
+<section class="controls">
+  <div class="controls-inner">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.49 4.49 0 0 1 9.5 14z"/></svg>
+      <input type="text" id="search" placeholder="Buscar aparelho... (ex: Redmi Note 15, Poco, Realme)">
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="p1000">Até R$ 1.000</button>
+      <button class="filter-btn" data-filter="p1500">Até R$ 1.500</button>
+      <button class="filter-btn" data-filter="p1500plus">Acima de R$ 1.500</button>
+      <button class="filter-btn" data-filter="5g">Apenas 5G</button>
+      <button class="filter-btn" data-filter="nfc">Apenas NFC</button>
+    </div>
+  </div>
+</section>
+
+<main id="catalog"></main>
+
+<p class="no-results" id="noResults">Nenhum aparelho encontrado. Tente outra busca. 🔍</p>
+
+<footer>
+  <div class="fname">Thiago Fidelis</div>
+  <a class="fwhats" href="https://wa.me/5537984041901?text=Ol%C3%A1%20Thiago%20Fidelis%2C%20tenho%20interesse%20nos%20smartphones%20do%20cat%C3%A1logo" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    WhatsApp: (37) 98404-1901
+  </a>
+  <div class="pays">Aceitamos: Dinheiro • Pix • Visa • Mastercard</div>
+  <div class="copy">© 2026 Thiago Fidelis — Catálogo de Smartphones</div>
+</footer>
+
+<a class="fab" href="https://wa.me/5537984041901?text=Ol%C3%A1%20Thiago%20Fidelis%2C%20tenho%20interesse%20em%20um%20smartphone" target="_blank" rel="noopener" aria-label="Fale no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<script>
+/* ====== DADOS DOS PRODUTOS ====== */
+const PRODUCTS = [
+  // ---- Xiaomi / Redmi / Poco ----
+  {brand:"xiaomi", name:"Redmi 15C 128GB 4GB RAM", store:"128GB", ram:"4GB", price:849.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi 15C 256GB 8GB RAM", store:"256GB", ram:"8GB", price:999.00, feats:[]},
+  {brand:"xiaomi", name:"Poco C85 128GB 6GB RAM", store:"128GB", ram:"6GB", price:849.00, feats:[]},
+  {brand:"xiaomi", name:"Poco C85 256GB 8GB RAM", store:"256GB", ram:"8GB", price:999.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi 15 128GB 6GB RAM", store:"128GB", ram:"6GB", price:950.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi 15 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1150.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi Note 14 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1100.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi Note 15 4G 128GB 6GB RAM", store:"128GB", ram:"6GB", price:1149.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi Note 15 4G 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1249.00, feats:[]},
+  {brand:"xiaomi", name:"Redmi Note 15 5G 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1550.00, feats:["5g"]},
+  {brand:"xiaomi", name:"Poco M8 Pro 256GB 8GB RAM 5G", store:"256GB", ram:"8GB", price:1890.00, feats:["5g","nfc","water"]},
+  {brand:"xiaomi", name:"Poco M8 Pro 512GB 12GB RAM 5G", store:"512GB", ram:"12GB", price:2190.00, feats:["5g","nfc","water"]},
+  // ---- Realme ----
+  {brand:"realme", name:"Realme Note 60X 128GB 4GB RAM", store:"128GB", ram:"4GB", price:799.00, feats:[]},
+  {brand:"realme", name:"Realme Note 70 128GB 4GB RAM", store:"128GB", ram:"4GB", price:899.00, feats:[]},
+  {brand:"realme", name:"Realme Note 70 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1029.00, feats:[]},
+  {brand:"realme", name:"Realme C71 128GB 4GB RAM", store:"128GB", ram:"4GB", price:999.00, feats:[]},
+  {brand:"realme", name:"Realme C71 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1099.00, feats:[]},
+  {brand:"realme", name:"Realme C75X 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1250.00, feats:["water"]},
+  {brand:"realme", name:"Realme C75 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1250.00, feats:["water"]},
+  {brand:"realme", name:"Realme C85 256GB 8GB RAM", store:"256GB", ram:"8GB", price:1450.00, feats:["water"]},
+];
+
+const BRANDS = [
+  {id:"xiaomi", label:"Xiaomi / Redmi / Poco", cls:"brand-xiaomi"},
+  {id:"realme", label:"Realme", cls:"brand-realme"},
+];
+
+const WHATS = "5537984041901";
+const FEAT_LABEL = {"5g":"5G", "nfc":"NFC", "water":"Resist. à água"};
+
+/* ====== HELPERS ====== */
+function brl(v){
+  return v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function buyLink(name){
+  const txt = `Olá Thiago Fidelis, tenho interesse no ${name}`;
+  return `https://wa.me/${WHATS}?text=${encodeURIComponent(txt)}`;
+}
+/* Placeholder elegante em SVG com o nome do aparelho */
+function placeholder(p){
+  const grad = p.brand==="realme"
+    ? ["#fff7d6","#ffe07a","#FFC400"]
+    : ["#fff1e6","#ffd1a8","#FF6700"];
+  const accent = p.brand==="realme" ? "#7a5c00" : "#7a2e00";
+  const words = p.name.split(" ");
+  // monta linhas curtas
+  let lines=[], cur="";
+  words.forEach(w=>{
+    if((cur+" "+w).trim().length>16){lines.push(cur.trim());cur=w;}
+    else cur+=" "+w;
+  });
+  if(cur.trim())lines.push(cur.trim());
+  lines = lines.slice(0,3);
+  const tspans = lines.map((l,i)=>
+    `<tspan x="200" dy="${i===0?0:26}">${l.replace(/&/g,'&amp;')}</tspan>`).join("");
+  const startY = 150 - (lines.length-1)*13;
+  const svg = `
+  <svg class="ph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${grad[0]}"/>
+        <stop offset="0.55" stop-color="${grad[1]}"/>
+        <stop offset="1" stop-color="${grad[2]}"/>
+      </linearGradient>
+    </defs>
+    <rect width="400" height="300" fill="url(#g)"/>
+    <g opacity="0.9">
+      <rect x="150" y="55" width="100" height="150" rx="16" fill="#ffffff" opacity="0.85"/>
+      <rect x="158" y="63" width="84" height="134" rx="10" fill="${accent}" opacity="0.18"/>
+      <circle cx="200" cy="190" r="5" fill="${accent}" opacity="0.4"/>
+    </g>
+    <text x="200" y="${startY}" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif"
+      font-size="17" font-weight="700" fill="${accent}">${tspans}</text>
+  </svg>`;
+  return svg;
+}
+
+function cardHTML(p){
+  const feats = p.feats.map(f=>{
+    const cls = f==="5g"?"f5g":f==="nfc"?"fnfc":"fwater";
+    return `<span class="feat ${cls}">${FEAT_LABEL[f]}</span>`;
+  }).join("");
+  const ribbon = p.feats.includes("5g") ? `<span class="ribbon">5G</span>`
+    : (p.price<=999 ? `<span class="ribbon">Oferta</span>` : "");
+  const [reais, cents] = brl(p.price).split(",");
+  return `
+  <article class="card" data-name="${p.name.toLowerCase()}" data-price="${p.price}" data-feats="${p.feats.join(' ')}">
+    <div class="card-img">${placeholder(p)}${ribbon}</div>
+    <div class="card-body">
+      <h3>${p.name}</h3>
+      <div class="specs">
+        <span class="spec store">💾 ${p.store}</span>
+        <span class="spec ram">⚡ ${p.ram} RAM</span>
+      </div>
+      ${feats?`<div class="feats">${feats}</div>`:""}
+      <div class="price-row">
+        <span class="from">a partir de</span>
+        <span class="price">R$ ${reais}<span class="cents">,${cents}</span></span>
+      </div>
+      <a class="buy" href="${buyLink(p.name)}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.207-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        Comprar pelo WhatsApp
+      </a>
+    </div>
+  </article>`;
+}
+
+/* ====== RENDER ====== */
+const catalog = document.getElementById("catalog");
+BRANDS.forEach(b=>{
+  const items = PRODUCTS.filter(p=>p.brand===b.id);
+  const section = document.createElement("section");
+  section.className = `brand-section ${b.cls}`;
+  section.id = b.id;
+  section.innerHTML = `
+    <div class="brand-head">
+      <span class="brand-bar"></span>
+      <h2>${b.label}</h2>
+      <span class="count">${items.length} modelos</span>
+    </div>
+    <div class="grid">${items.map(cardHTML).join("")}</div>`;
+  catalog.appendChild(section);
+});
+
+/* ====== BUSCA + FILTROS ====== */
+const search = document.getElementById("search");
+const filterBtns = document.querySelectorAll(".filter-btn");
+const noResults = document.getElementById("noResults");
+let activeFilter = "all";
+
+function applyFilters(){
+  const q = search.value.trim().toLowerCase();
+  let visibleTotal = 0;
+  document.querySelectorAll(".brand-section").forEach(sec=>{
+    let sectionVisible = 0;
+    sec.querySelectorAll(".card").forEach(card=>{
+      const name = card.dataset.name;
+      const price = parseFloat(card.dataset.price);
+      const feats = card.dataset.feats;
+      let ok = name.includes(q);
+      if(ok){
+        switch(activeFilter){
+          case "p1000": ok = price<=1000; break;
+          case "p1500": ok = price<=1500; break;
+          case "p1500plus": ok = price>1500; break;
+          case "5g": ok = feats.includes("5g"); break;
+          case "nfc": ok = feats.includes("nfc"); break;
+        }
+      }
+      card.style.display = ok ? "" : "none";
+      if(ok){sectionVisible++;visibleTotal++;}
+    });
+    sec.style.display = sectionVisible? "":"none";
+  });
+  noResults.classList.toggle("show", visibleTotal===0);
+}
+
+search.addEventListener("input", applyFilters);
+filterBtns.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    filterBtns.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+</script>
+</body>
+</html>
