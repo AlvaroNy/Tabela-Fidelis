@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copa 2026 • Brasil no Grupo C — Simulador de Classificação</title>
+<meta name="description" content="Tabela dinâmica do Grupo C da Copa do Mundo 2026. Simule os placares da última rodada e veja as chances do Brasil se classificar.">
+<style>
+  :root{
+    --preto:#0e0e10;
+    --preto-2:#1b1b1f;
+    --branco:#ffffff;
+    --cinza:#f4f5f7;
+    --cinza-2:#e6e8ec;
+    --texto:#222428;
+    --texto-suave:#6b7280;
+    --whats:#25D366;
+    --whats-dark:#1ebe5a;
+    --verde-br:#009c3b;
+    --amarelo-br:#ffdf00;
+    --azul-br:#002776;
+    --vermelho:#e53935;
+    --sombra:0 8px 24px rgba(16,18,22,.10);
+    --sombra-hover:0 16px 40px rgba(16,18,22,.20);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--cinza);
+    color:var(--texto);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:90px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:radial-gradient(120% 120% at 0% 0%, #0a5b27 0%, var(--verde-br) 45%, #002776 110%);
+    color:var(--branco);
+    padding:46px 20px 40px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      radial-gradient(40% 60% at 85% 15%, rgba(255,223,0,.22), transparent 60%),
+      radial-gradient(40% 60% at 10% 90%, rgba(37,211,102,.18), transparent 60%);
+    pointer-events:none;
+  }
+  .hero .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.18);
+    padding:7px 15px;border-radius:999px;
+    font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;
+    margin-bottom:16px;font-weight:600;
+  }
+  .hero h1{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:800;line-height:1.15;}
+  .hero h1 .flag{font-size:1.1em;}
+  .hero p{margin-top:10px;opacity:.92;font-size:.98rem;max-width:620px;margin-left:auto;margin-right:auto;}
+  .hero .updated{margin-top:14px;font-size:.8rem;opacity:.8;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:22px 16px;}
+
+  .card{
+    background:var(--branco);
+    border-radius:var(--radius);
+    box-shadow:var(--sombra);
+    padding:20px;
+    margin-bottom:20px;
+  }
+  .card h2{font-size:1.15rem;display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .card .sub{color:var(--texto-suave);font-size:.86rem;margin-bottom:16px;}
+
+  /* ---------- STATUS BANNER ---------- */
+  #statusBanner{
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-bottom:20px;
+    color:var(--branco);
+    box-shadow:var(--sombra);
+    transition:background .3s ease;
+  }
+  #statusBanner .st-title{font-size:1.2rem;font-weight:800;display:flex;align-items:center;gap:10px;}
+  #statusBanner .st-desc{margin-top:6px;font-size:.92rem;opacity:.95;}
+  .st-classificado{background:linear-gradient(120deg,#0a5b27,#009c3b);}
+  .st-depende{background:linear-gradient(120deg,#b8860b,#e6a700);}
+  .st-eliminado{background:linear-gradient(120deg,#a31515,#e53935);}
+
+  /* ---------- SIMULATOR ---------- */
+  .match{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:14px;border:1px solid var(--cinza-2);border-radius:14px;
+    margin-bottom:12px;flex-wrap:wrap;
+  }
+  .match .team{display:flex;align-items:center;gap:7px;font-weight:600;min-width:120px;}
+  .match .team.right{justify-content:flex-end;}
+  .match .flag{font-size:1.4rem;}
+  .match input[type=number]{
+    width:52px;height:46px;text-align:center;font-size:1.25rem;font-weight:700;
+    border:2px solid var(--cinza-2);border-radius:10px;background:var(--cinza);
+    color:var(--texto);
+  }
+  .match input[type=number]:focus{outline:none;border-color:var(--verde-br);}
+  .match .x{color:var(--texto-suave);font-weight:700;}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+  .presets button{
+    flex:1;min-width:130px;
+    border:1px solid var(--cinza-2);background:var(--cinza);
+    padding:10px;border-radius:12px;font-size:.85rem;font-weight:600;cursor:pointer;
+    transition:.15s;color:var(--texto);
+  }
+  .presets button:hover{border-color:var(--verde-br);background:#eafaef;}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  thead th{
+    background:var(--preto);color:var(--branco);
+    padding:10px 6px;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.3px;
+  }
+  thead th:first-child{border-top-left-radius:10px;}
+  thead th:last-child{border-top-right-radius:10px;}
+  tbody td{padding:11px 6px;text-align:center;border-bottom:1px solid var(--cinza-2);}
+  tbody td.team-cell{text-align:left;font-weight:700;white-space:nowrap;}
+  tbody td .flag{font-size:1.2rem;margin-right:5px;}
+  tbody tr.qualif{background:#eafaef;}
+  tbody tr.qualif td:first-child{box-shadow:inset 4px 0 0 var(--verde-br);}
+  tbody tr.third{background:#fff7e6;}
+  tbody tr.third td:first-child{box-shadow:inset 4px 0 0 #e6a700;}
+  tbody tr.brasil td{font-weight:800;}
+  .pos-badge{display:inline-block;width:22px;height:22px;line-height:22px;border-radius:50%;font-size:.78rem;font-weight:700;background:var(--cinza-2);}
+  tr.qualif .pos-badge{background:var(--verde-br);color:#fff;}
+  tr.third .pos-badge{background:#e6a700;color:#fff;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.8rem;color:var(--texto-suave);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .dot.g{background:var(--verde-br);}
+  .dot.y{background:#e6a700;}
+
+  /* ---------- WHATSAPP BAR ---------- */
+  .actionbar{
+    position:fixed;left:0;right:0;bottom:0;
+    background:var(--branco);border-top:1px solid var(--cinza-2);
+    padding:12px 16px;display:flex;gap:10px;justify-content:center;
+    box-shadow:0 -8px 24px rgba(16,18,22,.10);z-index:50;
+  }
+  .actionbar .btn{
+    flex:1;max-width:340px;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    padding:14px;border-radius:14px;font-weight:700;font-size:1rem;
+    text-decoration:none;cursor:pointer;border:none;transition:.15s;
+  }
+  .btn-whats{background:var(--whats);color:#fff;}
+  .btn-whats:hover{background:var(--whats-dark);}
+  .btn-copy{background:var(--cinza);color:var(--texto);border:1px solid var(--cinza-2);max-width:160px;}
+  .btn-copy:hover{border-color:var(--verde-br);}
+  .toast{
+    position:fixed;bottom:84px;left:50%;transform:translateX(-50%);
+    background:var(--preto);color:#fff;padding:10px 18px;border-radius:999px;
+    font-size:.85rem;opacity:0;pointer-events:none;transition:.25s;z-index:60;
+  }
+  .toast.show{opacity:1;}
+
+  .games-info{font-size:.84rem;color:var(--texto-suave);margin-top:14px;}
+  .games-info b{color:var(--texto);}
+  footer{text-align:center;color:var(--texto-suave);font-size:.78rem;padding:10px 16px 4px;}
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <span class="badge">🏆 Copa do Mundo FIFA 2026</span>
+    <h1><span class="flag">🇧🇷</span> Brasil no Grupo C</h1>
+    <p>Simulador da última rodada: ajuste os placares e veja em tempo real se o Brasil se classifica para as oitavas.</p>
+    <div class="updated">Atualizado após a 2ª rodada • Resta a rodada de 24/06</div>
+  </header>
+
+  <main class="wrap">
+
+    <!-- Banner de situação -->
+    <div id="statusBanner"></div>
+
+    <!-- Simulador -->
+    <section class="card">
+      <h2>🎮 Simule a 3ª rodada</h2>
+      <p class="sub">Jogos simultâneos em 24/06. Mude os placares e a tabela recalcula sozinha.</p>
+
+      <div class="match">
+        <span class="team"><span class="flag">🇧🇷</span> Brasil</span>
+        <input type="number" min="0" max="20" id="g_bra" value="2" inputmode="numeric">
+        <span class="x">×</span>
+        <input type="number" min="0" max="20" id="g_esc" value="0" inputmode="numeric">
+        <span class="team right">Escócia <span class="flag">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span></span>
+      </div>
+
+      <div class="match">
+        <span class="team"><span class="flag">🇲🇦</span> Marrocos</span>
+        <input type="number" min="0" max="20" id="g_mar" value="2" inputmode="numeric">
+        <span class="x">×</span>
+        <input type="number" min="0" max="20" id="g_hai" value="0" inputmode="numeric">
+        <span class="team right">Haiti <span class="flag">🇭🇹</span></span>
+      </div>
+
+      <div class="presets">
+        <button onclick="preset(2,0,2,0)">🇧🇷 Brasil vence</button>
+        <button onclick="preset(1,1,2,0)">🤝 Brasil empata</button>
+        <button onclick="preset(0,2,2,0)">⚠️ Brasil perde</button>
+      </div>
+    </section>
+
+    <!-- Tabela dinâmica -->
+    <section class="card">
+      <h2>📊 Classificação final do Grupo C</h2>
+      <p class="sub">Os 2 primeiros vão direto às oitavas. O 3º pode avançar entre os 8 melhores terceiros colocados.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th style="text-align:left">Seleção</th>
+            <th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>GP</th><th>GC</th><th>SG</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="legend">
+        <span><span class="dot g"></span> Classificado (1º/2º)</span>
+        <span><span class="dot y"></span> 3º lugar — repescagem entre grupos</span>
+      </div>
+      <div class="games-info">
+        <b>Resultados até aqui:</b> Brasil 1–1 Marrocos • Escócia 1–0 Haiti • Brasil 3–0 Haiti • Marrocos 1–0 Escócia.
+      </div>
+    </section>
+
+    <footer>
+      Tabela dinâmica não-oficial • Critérios de desempate: pontos › saldo de gols › gols marcados.
+    </footer>
+  </main>
+
+  <!-- Barra de ações WhatsApp -->
+  <div class="actionbar">
+    <button class="btn btn-copy" id="copyBtn">📋 Copiar</button>
+    <a class="btn btn-whats" id="waBtn" target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.728-.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+      Enviar no WhatsApp
+    </a>
+  </div>
+
+  <div class="toast" id="toast">Resumo copiado!</div>
+
+<script>
+  // ---- Estado base (após 2 rodadas) ----
+  // GP/GC = gols pró / contra já acumulados antes da 3ª rodada
+  const base = {
+    bra: {nome:"Brasil",    flag:"🇧🇷", pts:4, j:2, v:1, e:1, d:0, gp:4, gc:1},
+    mar: {nome:"Marrocos",  flag:"🇲🇦", pts:4, j:2, v:1, e:1, d:0, gp:2, gc:1},
+    esc: {nome:"Escócia",   flag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", pts:3, j:2, v:1, e:0, d:1, gp:1, gc:1},
+    hai: {nome:"Haiti",     flag:"🇭🇹", pts:0, j:2, v:0, e:0, d:2, gp:0, gc:4},
+  };
+
+  const $ = id => document.getElementById(id);
+
+  function val(id){ const n = parseInt($(id).value,10); return isNaN(n)||n<0 ? 0 : n; }
+
+  function applyMatch(a,b,ga,gb){
+    // clona estado base e soma o resultado da 3ª rodada
+    a.j++; b.j++;
+    a.gp+=ga; a.gc+=gb; b.gp+=gb; b.gc+=ga;
+    if(ga>gb){ a.v++; a.pts+=3; b.d++; }
+    else if(gb>ga){ b.v++; b.pts+=3; a.d++; }
+    else { a.e++; b.e++; a.pts++; b.pts++; }
+  }
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+
+  function compute(){
+    const t = {bra:clone(base.bra), mar:clone(base.mar), esc:clone(base.esc), hai:clone(base.hai)};
+    const gBra=val("g_bra"), gEsc=val("g_esc"), gMar=val("g_mar"), gHai=val("g_hai");
+    applyMatch(t.bra, t.esc, gBra, gEsc);
+    applyMatch(t.mar, t.hai, gMar, gHai);
+
+    const arr = Object.entries(t).map(([k,v])=>({k,...v, sg:v.gp-v.gc}));
+    arr.sort((x,y)=> y.pts-x.pts || y.sg-x.sg || y.gp-x.gp || x.nome.localeCompare(y.nome));
+    return arr;
+  }
+
+  function render(){
+    const arr = compute();
+    const body = $("tableBody");
+    body.innerHTML = "";
+    arr.forEach((row,i)=>{
+      const pos=i+1;
+      const tr=document.createElement("tr");
+      let cls = pos<=2 ? "qualif" : (pos===3 ? "third":"");
+      if(row.k==="bra") cls += " brasil";
+      tr.className=cls.trim();
+      tr.innerHTML = `
+        <td><span class="pos-badge">${pos}</span></td>
+        <td class="team-cell"><span class="flag">${row.flag}</span>${row.nome}</td>
+        <td><b>${row.pts}</b></td><td>${row.j}</td><td>${row.v}</td><td>${row.e}</td><td>${row.d}</td>
+        <td>${row.gp}</td><td>${row.gc}</td><td>${row.sg>0?"+"+row.sg:row.sg}</td>`;
+      body.appendChild(tr);
+    });
+    updateStatus(arr);
+    updateShare(arr);
+  }
+
+  function updateStatus(arr){
+    const posBra = arr.findIndex(r=>r.k==="bra")+1;
+    const banner = $("statusBanner");
+    let cls, title, desc;
+    if(posBra<=2){
+      cls="st-classificado";
+      title="✅ BRASIL CLASSIFICADO!";
+      desc=`Com este resultado o Brasil termina em ${posBra}º lugar e avança direto às oitavas de final. 🇧🇷🎉`;
+    } else if(posBra===3){
+      cls="st-depende";
+      title="⚠️ BRASIL EM 3º — DEPENDE DE OUTROS GRUPOS";
+      desc="O Brasil termina em 3º. A vaga só vem se ficar entre os 8 melhores terceiros colocados das 12 chaves.";
+    } else {
+      cls="st-eliminado";
+      title="❌ BRASIL ELIMINADO";
+      desc="Com este resultado o Brasil termina em 4º e está fora da Copa. 😢";
+    }
+    banner.className=cls;
+    banner.innerHTML=`<div class="st-title">${title}</div><div class="st-desc">${desc}</div>`;
+  }
+
+  function buildSummary(arr){
+    const gBra=val("g_bra"), gEsc=val("g_esc"), gMar=val("g_mar"), gHai=val("g_hai");
+    const posBra = arr.findIndex(r=>r.k==="bra")+1;
+    let situacao = posBra<=2 ? `CLASSIFICADO em ${posBra}º! ✅`
+                 : posBra===3 ? "3º lugar — depende dos melhores terceiros ⚠️"
+                 : "ELIMINADO ❌";
+    let txt = `🏆 *COPA 2026 — GRUPO C* 🇧🇷\n\n`;
+    txt += `Simulação da última rodada (24/06):\n`;
+    txt += `🇧🇷 Brasil ${gBra} x ${gEsc} Escócia 🏴\n`;
+    txt += `🇲🇦 Marrocos ${gMar} x ${gHai} Haiti 🇭🇹\n\n`;
+    txt += `*Classificação final:*\n`;
+    arr.forEach((r,i)=>{
+      const mark = i<2 ? "✅" : (i===2 ? "⚠️":"❌");
+      txt += `${i+1}º ${r.flag} ${r.nome} — ${r.pts} pts (SG ${r.sg>0?"+"+r.sg:r.sg}) ${mark}\n`;
+    });
+    txt += `\n👉 *Brasil: ${situacao}*`;
+    return txt;
+  }
+
+  let lastSummary="";
+  function updateShare(arr){
+    lastSummary = buildSummary(arr);
+    $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastSummary);
+  }
+
+  function preset(a,b,c,d){
+    $("g_bra").value=a; $("g_esc").value=b; $("g_mar").value=c; $("g_hai").value=d;
+    render();
+  }
+
+  // Copiar resumo
+  $("copyBtn").addEventListener("click", async ()=>{
+    try{
+      await navigator.clipboard.writeText(lastSummary);
+    }catch(e){
+      const ta=document.createElement("textarea");
+      ta.value=lastSummary; document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); ta.remove();
+    }
+    const t=$("toast"); t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),1600);
+  });
+
+  // Recalcula ao digitar
+  ["g_bra","g_esc","g_mar","g_hai"].forEach(id=>{
+    $(id).addEventListener("input", render);
+  });
+
+  render();
+</script>
+</body>
+</html>
